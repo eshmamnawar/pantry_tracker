@@ -14,6 +14,7 @@ import {
   getDoc,
 } from 'firebase/firestore';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import useFirebaseAnalytics from '@/useFirebaseAnalytics';
 
 const style = {
   position: 'absolute',
@@ -36,6 +37,8 @@ export default function Home() {
   const [itemName, setItemName] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredInventory, setFilteredInventory] = useState([]);
+
+  useFirebaseAnalytics(); // Use Firebase Analytics hook
 
   const updateInventory = async () => {
     const snapshot = query(collection(firestore, 'inventory'));
@@ -113,10 +116,6 @@ export default function Home() {
     );
     setFilteredInventory(filtered);
   };
-
-  useEffect(() => {
-    // Safe to use `window` here if needed
-  }, []);
 
   return (
     <Box
@@ -229,22 +228,23 @@ export default function Home() {
                 <Button
                   variant="contained"
                   onClick={() => increaseItem(name)}
-                  sx={{ bgcolor: 'green', '&:hover': { bgcolor: 'darkgreen' } }}
+                  sx={{ bgcolor: 'green', color: 'white' }}
                 >
                   +
                 </Button>
                 <Button
                   variant="contained"
                   onClick={() => decreaseItem(name)}
-                  sx={{ bgcolor: 'red', '&:hover': { bgcolor: 'darkred' } }}
+                  sx={{ bgcolor: 'red', color: 'white' }}
                 >
                   -
                 </Button>
-                <Button 
-                  variant="contained" 
+                <Button
+                  variant="contained"
+                  color="error"
                   onClick={() => removeItem(name)}
-                  startIcon={<DeleteIcon />}>
-                  Delete
+                >
+                  <DeleteIcon />
                 </Button>
               </Stack>
             </Box>
