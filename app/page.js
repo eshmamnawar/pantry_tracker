@@ -1,9 +1,9 @@
-'use client'
+'use client';
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Box, Stack, Typography, Button, Modal, TextField } from '@mui/material'
-import { firestore } from '@/firebase'
+import { Box, Stack, Typography, Button, Modal, TextField } from '@mui/material';
+import { firestore } from '@/firebase';
 import {
   collection,
   doc,
@@ -12,7 +12,7 @@ import {
   setDoc,
   deleteDoc,
   getDoc,
-} from 'firebase/firestore'
+} from 'firebase/firestore';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 const style = {
@@ -28,85 +28,83 @@ const style = {
   display: 'flex',
   flexDirection: 'column',
   gap: 3,
-}
+};
 
 export default function Home() {
-  const [inventory, setInventory] = useState([])
-  const [open, setOpen] = useState(false)
-  const [itemName, setItemName] = useState('')
-  const [searchTerm, setSearchTerm] = useState('') 
-  const [filteredInventory, setFilteredInventory] = useState([]) 
-  
+  const [inventory, setInventory] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [itemName, setItemName] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredInventory, setFilteredInventory] = useState([]);
 
   const updateInventory = async () => {
-    const snapshot = query(collection(firestore, 'inventory'))
-    const docs = await getDocs(snapshot)
-    const inventoryList = []
+    const snapshot = query(collection(firestore, 'inventory'));
+    const docs = await getDocs(snapshot);
+    const inventoryList = [];
     docs.forEach((doc) => {
-      inventoryList.push({ name: doc.id, ...doc.data() })
-    })
-    setInventory(inventoryList)
-    setFilteredInventory(inventoryList) // Initialize filtered inventory
-  }
+      inventoryList.push({ name: doc.id, ...doc.data() });
+    });
+    setInventory(inventoryList);
+    setFilteredInventory(inventoryList); // Initialize filtered inventory
+  };
 
   useEffect(() => {
-    updateInventory()
-  }, [])
+    updateInventory();
+  }, []);
 
   const addItem = async (item) => {
-    const docRef = doc(collection(firestore, 'inventory'), item)
-    const docSnap = await getDoc(docRef)
+    const docRef = doc(collection(firestore, 'inventory'), item);
+    const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      const { quantity } = docSnap.data()
-      await setDoc(docRef, { quantity: quantity + 1 })
+      const { quantity } = docSnap.data();
+      await setDoc(docRef, { quantity: quantity + 1 });
     } else {
-      await setDoc(docRef, { quantity: 1 })
+      await setDoc(docRef, { quantity: 1 });
     }
-    await updateInventory()
-  }
+    await updateInventory();
+  };
 
   const removeItem = async (item) => {
-    const docRef = doc(collection(firestore, 'inventory'), item)
-    const docSnap = await getDoc(docRef)
+    const docRef = doc(collection(firestore, 'inventory'), item);
+    const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      const { quantity } = docSnap.data()
+      const { quantity } = docSnap.data();
       if (quantity === 1) {
-        await deleteDoc(docRef)
+        await deleteDoc(docRef);
       } else {
-        await setDoc(docRef, { quantity: quantity - 1 })
+        await setDoc(docRef, { quantity: quantity - 1 });
       }
     }
-    await updateInventory()
-  }
+    await updateInventory();
+  };
 
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const increaseItem = async (item) => {
-    const docRef = doc(collection(firestore, 'inventory'), item)
-    const docSnap = await getDoc(docRef)
+    const docRef = doc(collection(firestore, 'inventory'), item);
+    const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      const { quantity } = docSnap.data()
-      await setDoc(docRef, { quantity: quantity + 1 })
+      const { quantity } = docSnap.data();
+      await setDoc(docRef, { quantity: quantity + 1 });
     }
-    await updateInventory()
-  }
+    await updateInventory();
+  };
 
   const decreaseItem = async (item) => {
-    const docRef = doc(collection(firestore, 'inventory'), item)
-    const docSnap = await getDoc(docRef)
+    const docRef = doc(collection(firestore, 'inventory'), item);
+    const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      const { quantity } = docSnap.data()
+      const { quantity } = docSnap.data();
       if (quantity > 1) {
-        await setDoc(docRef, { quantity: quantity - 1 })
+        await setDoc(docRef, { quantity: quantity - 1 });
       } else {
-        await deleteDoc(docRef)
+        await deleteDoc(docRef);
       }
     }
-    await updateInventory()
-  }
+    await updateInventory();
+  };
 
-  // Handle search input change
   const handleSearchChange = (e) => {
     const value = e.target.value.toLowerCase();
     setSearchTerm(value);
@@ -115,7 +113,10 @@ export default function Home() {
     );
     setFilteredInventory(filtered);
   };
-  
+
+  useEffect(() => {
+    // Safe to use `window` here if needed
+  }, []);
 
   return (
     <Box
@@ -150,9 +151,9 @@ export default function Home() {
             <Button
               variant="outlined"
               onClick={() => {
-                addItem(itemName)
-                setItemName('')
-                handleClose()
+                addItem(itemName);
+                setItemName('');
+                handleClose();
               }}
             >
               Add
@@ -176,21 +177,21 @@ export default function Home() {
         }}
       />
       <Stack direction="row" spacing={2} sx={{mb:3}}>
-      <Button
-        component="label"
-        role={undefined}
-        variant="outlined"
-        startIcon={<CloudUploadIcon />}>
-        Upload File
-        <input type="file" hidden />
-      </Button>
-      <Button 
-        color="success"
-        variant="outlined" 
-        onClick={handleOpen}
-        sx={{ mb: 2 }}>
-        Add New Item
-      </Button>
+        <Button
+          component="label"
+          role={undefined}
+          variant="outlined"
+          startIcon={<CloudUploadIcon />}>
+          Upload File
+          <input type="file" hidden />
+        </Button>
+        <Button 
+          color="success"
+          variant="outlined" 
+          onClick={handleOpen}
+          sx={{ mb: 2 }}>
+          Add New Item
+        </Button>
       </Stack>
        
       <Box border={'1px solid #333'}>
@@ -251,7 +252,5 @@ export default function Home() {
         </Stack>
       </Box>
     </Box>
-  )
+  );
 }
-
- 
